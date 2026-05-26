@@ -1,5 +1,5 @@
 {
-  "name": "vite-plugin-vue-router-const",
+  "name": "vite-plugin-vue-router-auto-generate-const",
   "version": "0.0.0",
   "description": "A starter for creating a TypeScript package.",
   "homepage": "https://github.com/author/library#readme",

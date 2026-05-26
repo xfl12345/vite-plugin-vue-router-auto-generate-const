@@ -1,8 +1,8 @@
-import { defineConfig } from "vite-plus";
+import { defineConfig } from 'vite-plus'
 
 export default defineConfig({
   staged: {
-    "*": "vp check --fix",
+    '*': 'vp check --fix',
   },
   pack: {
     dts: {
@@ -16,5 +16,21 @@ export default defineConfig({
       typeCheck: true,
     },
   },
-  fmt: {},
-});
+  fmt: {
+    semi: false,
+    singleQuote: true,
+    jsxSingleQuote: true,
+    trailingComma: 'es5',
+    sortImports: {
+      groups: [
+        'type-import',
+        ['value-builtin', 'value-external'],
+        'type-internal',
+        'value-internal',
+        ['type-parent', 'type-sibling', 'type-index'],
+        ['value-parent', 'value-sibling', 'value-index'],
+        'unknown',
+      ],
+    },
+  },
+})

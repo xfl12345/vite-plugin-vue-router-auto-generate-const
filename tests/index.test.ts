@@ -42,3 +42,11 @@ test('generateConstContent matches expected output', () => {
 
   expect(output).toBe(expected)
 })
+
+test('generateConstContent with empty route names', () => {
+  const expected = readFileSync(resolve(assertsDir, 'expect-empty.txt'), 'utf-8')
+
+  const output = generateConstContent([])
+
+  expect(output).toBe(expected)
+})

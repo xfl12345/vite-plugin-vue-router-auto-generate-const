@@ -1,0 +1,3 @@
+import type { RouteNamedMap } from 'vue-router/auto-routes'
+
+export const ROUTER_NAMES = {} as const

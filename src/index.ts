@@ -75,12 +75,18 @@ export function extractRouteNamesFromContent(content: string): string[] {
 
 /** 根据路由名称列表生成常量文件内容 */
 export function generateConstContent(routeNames: string[]): string {
+  if (routeNames.length === 0) {
+    return `import type { RouteNamedMap } from 'vue-router/auto-routes'
+
+export const ROUTER_NAMES = {} as const
+`
+  }
+
   const entries = routeNames.map((name) => `  ${routePathToConstKey(name)}: '${name}'`).join(',\n')
-  const ending = entries === '' ? '' : ','
   return `import type { RouteNamedMap } from 'vue-router/auto-routes'
 
 export const ROUTER_NAMES = {
-${entries}${ending}
+${entries},
 } as const satisfies Record<string, keyof RouteNamedMap>
 `
 }
@@ -100,8 +106,6 @@ export class ConstHandler {
     }
 
     const routeNames = extractRouteNamesFromContent(content)
-    if (routeNames.length === 0) return
-
     const generated = generateConstContent(routeNames)
     writeFileSync(this.generatedConstFile.path, generated, {
       encoding: this.generatedConstFile.encoding,

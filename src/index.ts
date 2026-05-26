@@ -14,7 +14,7 @@ export interface FileInfo {
 export const DEFAULT_OPTIONS: RequiredDeep<VueRouterAutoGenerateConstOptions> = {
   generatedConstFile: { path: 'src/router/TheConst.ts', encoding: 'utf-8' },
   typedRouterFile: { path: 'typed-router.d.ts', encoding: 'utf-8' },
-}
+} as const
 
 export interface VueRouterAutoGenerateConstOptions {
   /**

@@ -8,6 +8,20 @@ export default defineConfig({
     dts: {
       tsgo: true,
     },
+    deps: {
+      onlyBundle: [
+        '@oxc-project/types',
+        '@types/chai',
+        '@types/deep-eql',
+        '@voidzero-dev/vite-plus-core',
+        '@voidzero-dev/vite-plus-test',
+        'assertion-error',
+        'oxfmt',
+        'oxlint',
+        'type-fest',
+        'vite-plus',
+      ],
+    },
     exports: true,
   },
   lint: {

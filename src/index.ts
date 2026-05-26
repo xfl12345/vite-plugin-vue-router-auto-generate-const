@@ -30,15 +30,35 @@ export interface VueRouterAutoGenerateConstOptions {
 
 /** 将路由路径转为全大写下划线常量名，如 '/first-time-loading-page' → 'FIRST_TIME_LOADING_PAGE' */
 export function routePathToConstKey(path: string): string {
-  if (path === '/') return 'INDEX'
+  if (path === '/') {
+    return 'INDEX'
+  }
+
   const isIndex = path.endsWith('/')
-  const key = path
-    .replace(/\/+$/, '') // 去掉尾随 /
-    .slice(1) // 去掉开头的 /
-    .replace(/\/-/g, '_') // 中间的 / 和 - 统一转为下划线分隔
-    .replace(/[/-]/g, '_')
-    .toUpperCase()
-  return isIndex ? `${key}_INDEX` : key
+  const chars: string[] = []
+  for (let i = 1; i < path.length; i += 1) {
+    // i 从 1 开始，跳过开头的 /
+    const ch = path[i]!
+    switch (ch) {
+      case '/':
+        if (path.at(i + 1) === '-') {
+          // '/-' 合并为一个 _
+          chars.push('_')
+          i += 1
+        } else {
+          chars.push('_')
+        }
+        break
+      case '-':
+        chars.push('_')
+        break
+      default:
+        chars.push(ch.toUpperCase())
+    }
+  }
+
+  const key = chars.join('')
+  return isIndex ? `${key}INDEX` : key
 }
 
 /** 从 typed-router.d.ts 文件内容中提取路由名称列表 */

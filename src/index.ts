@@ -28,6 +28,42 @@ export interface VueRouterAutoGenerateConstOptions {
   fileEncoding?: FileEncoding
 }
 
+/** 将路由路径转为全大写下划线常量名，如 '/first-time-loading-page' → 'FIRST_TIME_LOADING_PAGE' */
+export function routePathToConstKey(path: string): string {
+  if (path === '/') return 'INDEX'
+  const isIndex = path.endsWith('/')
+  const key = path
+    .replace(/\/+$/, '') // 去掉尾随 /
+    .slice(1) // 去掉开头的 /
+    .replace(/\/-/g, '_') // 中间的 / 和 - 统一转为下划线分隔
+    .replace(/[/-]/g, '_')
+    .toUpperCase()
+  return isIndex ? `${key}_INDEX` : key
+}
+
+/** 从 typed-router.d.ts 文件内容中提取路由名称列表 */
+export function extractRouteNamesFromContent(content: string): string[] {
+  const names: string[] = []
+  const regex = /^\s*'([^']+)':\s*RouteRecordInfo/gm
+  let match: RegExpExecArray | null
+  while ((match = regex.exec(content)) !== null) {
+    names.push(match[1]!)
+  }
+  return names
+}
+
+/** 根据路由名称列表生成常量文件内容 */
+export function generateConstContent(routeNames: string[]): string {
+  const entries = routeNames.map((name) => `  ${routePathToConstKey(name)}: '${name}'`).join(',\n')
+  const ending = entries === '' ? '' : ','
+  return `import type { RouteNamedMap } from 'vue-router/auto-routes'
+
+export const ROUTER_NAMES = {
+${entries}${ending}
+} as const satisfies Record<string, keyof RouteNamedMap>
+`
+}
+
 /**
  * Vite 插件：在 vue-router/vite 生成路由后，自动生成路由名常量文件。
  * 必须放在 VueRouter() 之后、vue() 之前。
@@ -65,53 +101,17 @@ export function VueRouterAutoGenerateConst(
   }
 
   function syncConst(): void {
-    const routeNames = extractRouteNames()
-    if (routeNames.length === 0) return
-
-    const content = generateConstContent(routeNames)
-    writeFileSync(generatedConstPath, content, { encoding: constFileEncoding })
-  }
-
-  function extractRouteNames(): string[] {
     let content: string
     try {
       content = readFileSync(typedRouterPath, { encoding: typedRouterFileEncoding })
     } catch {
-      return []
+      return
     }
 
-    const names: string[] = []
-    const regex = /^\s*'([^']+)':\s*RouteRecordInfo/gm
-    let match: RegExpExecArray | null
-    while ((match = regex.exec(content)) !== null) {
-      names.push(match[1]!)
-    }
-    return names
-  }
+    const routeNames = extractRouteNamesFromContent(content)
+    if (routeNames.length === 0) return
 
-  function generateConstContent(routeNames: string[]): string {
-    const entries = routeNames
-      .map((name) => `  ${routePathToConstKey(name)}: '${name}'`)
-      .join(',\n')
-    const ending = entries === '' ? '' : ','
-    return `import type { RouteNamedMap } from 'vue-router/auto-routes'
-
-export const ROUTER_NAMES = {
-${entries}${ending}
-} as const satisfies Record<string, keyof RouteNamedMap>
-`
-  }
-
-  /** 将路由路径转为全大写下划线常量名，如 '/first-time-loading-page' → 'FIRST_TIME_LOADING_PAGE' */
-  function routePathToConstKey(path: string): string {
-    if (path === '/') return 'INDEX'
-    const isIndex = path.endsWith('/')
-    const key = path
-      .replace(/\/+$/, '') // 去掉尾随 /
-      .slice(1) // 去掉开头的 /
-      .replace(/\/-/g, '_') // 中间的 / 和 - 统一转为下划线分隔
-      .replace(/[/-]/g, '_')
-      .toUpperCase()
-    return isIndex ? `${key}_INDEX` : key
+    const generated = generateConstContent(routeNames)
+    writeFileSync(generatedConstPath, generated, { encoding: constFileEncoding })
   }
 }

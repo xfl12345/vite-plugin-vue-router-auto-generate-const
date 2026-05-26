@@ -1,0 +1,10 @@
+import type { RouteNamedMap } from 'vue-router/auto-routes'
+
+export const ROUTER_NAMES = {
+  INDEX: '/',
+  EMOJI2PNG: '/emoji2png',
+  VUE_WELCOME: '/vue-welcome',
+  VUE_WELCOME_INDEX: '/vue-welcome/',
+  VUE_WELCOME_ABOUT: '/vue-welcome/about',
+  VUE_WELCOME_HOME: '/vue-welcome/home',
+} as const satisfies Record<string, keyof RouteNamedMap>

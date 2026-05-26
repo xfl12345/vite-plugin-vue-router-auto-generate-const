@@ -84,46 +84,18 @@ ${entries}${ending}
 `
 }
 
-/**
- * Vite 插件：在 vue-router/vite 生成路由后，自动生成路由名常量文件。
- * 必须放在 VueRouter() 之后、vue() 之前。
- */
-export function VueRouterAutoGenerateConst(
-  options: VueRouterAutoGenerateConstOptions = {}
-): Plugin {
-  let root: string
-  let generatedConstPath: string
-  let typedRouterPath: string
-  let constFileEncoding: BufferEncoding
-  let typedRouterFileEncoding: BufferEncoding
+export class ConstHandler {
+  constructor(
+    private readonly generatedConstPath: string,
+    private readonly typedRouterPath: string,
+    private readonly constFileEncoding: BufferEncoding,
+    private readonly typedRouterFileEncoding: BufferEncoding
+  ) {}
 
-  return {
-    name: 'vue-router-auto-generate-const',
-    enforce: 'pre',
-
-    configResolved(config) {
-      root = config.root
-      generatedConstPath = resolve(root, options.generatedConstFile ?? 'src/router/TheConst.ts')
-      typedRouterPath = resolve(root, options.typedRouterFile ?? 'typed-router.d.ts')
-      constFileEncoding = options.fileEncoding?.generatedConstFile ?? 'utf-8'
-      typedRouterFileEncoding = options.fileEncoding?.typedRouterFile ?? 'utf-8'
-    },
-
-    buildStart() {
-      syncConst()
-    },
-
-    handleHotUpdate({ file }) {
-      if (file === typedRouterPath) {
-        syncConst()
-      }
-    },
-  }
-
-  function syncConst(): void {
+  sync(): void {
     let content: string
     try {
-      content = readFileSync(typedRouterPath, { encoding: typedRouterFileEncoding })
+      content = readFileSync(this.typedRouterPath, { encoding: this.typedRouterFileEncoding })
     } catch {
       return
     }
@@ -132,6 +104,44 @@ export function VueRouterAutoGenerateConst(
     if (routeNames.length === 0) return
 
     const generated = generateConstContent(routeNames)
-    writeFileSync(generatedConstPath, generated, { encoding: constFileEncoding })
+    writeFileSync(this.generatedConstPath, generated, { encoding: this.constFileEncoding })
+  }
+
+  isMatchTypedRouterFile(file: string): boolean {
+    return file === this.typedRouterPath
+  }
+}
+
+/**
+ * Vite 插件：在 vue-router/vite 生成路由后，自动生成路由名常量文件。
+ * 必须放在 VueRouter() 之后、vue() 之前。
+ */
+export function VueRouterAutoGenerateConst(
+  options: VueRouterAutoGenerateConstOptions = {}
+): Plugin {
+  let handler: ConstHandler
+
+  return {
+    name: 'vue-router-auto-generate-const',
+    enforce: 'pre',
+
+    configResolved(config) {
+      handler = new ConstHandler(
+        resolve(config.root, options.generatedConstFile ?? 'src/router/TheConst.ts'),
+        resolve(config.root, options.typedRouterFile ?? 'typed-router.d.ts'),
+        options.fileEncoding?.generatedConstFile ?? 'utf-8',
+        options.fileEncoding?.typedRouterFile ?? 'utf-8'
+      )
+    },
+
+    buildStart() {
+      handler.sync()
+    },
+
+    handleHotUpdate({ file }) {
+      if (handler.isMatchTypedRouterFile(file)) {
+        handler.sync()
+      }
+    },
   }
 }

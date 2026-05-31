@@ -1,6 +1,6 @@
 # vite-plugin-vue-router-auto-generate-const
 
-一个 Vite 插件，配合 [Vue Router v5 的文件路由功能](https://router.vuejs.org/file-based-routing/)使用，自动将路由名称生成为 TypeScript 常量对象。
+一个 Vite 插件，配合 [Vue Router v5 的文件路由功能](https://router.vuejs.org/file-based-routing/file-based-routing.html)使用，自动将路由名称生成为 TypeScript 常量对象。
 
 ## 为什么需要这个插件？
 

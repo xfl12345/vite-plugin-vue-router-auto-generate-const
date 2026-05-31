@@ -50,15 +50,15 @@
   },
   "packageManager": "pnpm@11.5.0+sha512.dbfcc4f81cf48597afd4bc391ffdf12c11f1a9fb83a395bfa6b0a2d9cc2fd8ffebafdb1ccbd529632153f793904c2615b7f09fe1a345473fd1c35845172a8eb1",
   "inlinedDependencies": {
-    "@oxc-project/types": "0.129.0",
+    "@oxc-project/types": "0.133.0",
     "@types/chai": "5.2.3",
     "@types/deep-eql": "4.0.2",
-    "@voidzero-dev/vite-plus-core": "0.1.22",
-    "@voidzero-dev/vite-plus-test": "0.1.22",
+    "@voidzero-dev/vite-plus-core": "0.1.23",
+    "@voidzero-dev/vite-plus-test": "0.1.23",
     "assertion-error": "2.0.1",
-    "oxfmt": "0.48.0",
-    "oxlint": "1.63.0",
+    "oxfmt": "0.52.0",
+    "oxlint": "1.67.0",
     "type-fest": "5.6.0",
-    "vite-plus": "0.1.22"
+    "vite-plus": "0.1.23"
   }
 }

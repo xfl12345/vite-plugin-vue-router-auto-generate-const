@@ -1,16 +1,25 @@
 {
   "name": "vite-plugin-vue-router-auto-generate-const",
-  "version": "0.0.0",
-  "description": "A starter for creating a TypeScript package.",
-  "homepage": "https://github.com/author/library#readme",
+  "version": "0.1.0",
+  "description": "一个简单的 Vue Router 路由名称枚举类型生成插件",
+  "keywords": [
+    "auto-generate",
+    "constants",
+    "typescript",
+    "vite",
+    "vite-plugin",
+    "vue",
+    "vue-router"
+  ],
+  "homepage": "https://github.com/xfl12345/vite-plugin-vue-router-auto-generate-const#readme",
   "bugs": {
-    "url": "https://github.com/author/library/issues"
+    "url": "https://github.com/xfl12345/vite-plugin-vue-router-auto-generate-const/issues"
   },
   "license": "MIT",
-  "author": "Author Name <author.name@mail.com>",
+  "author": "xfl12345 <17960863+xfl12345@users.noreply.github.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/author/library.git"
+    "url": "git+https://github.com/xfl12345/vite-plugin-vue-router-auto-generate-const.git"
   },
   "files": [
     "dist"
